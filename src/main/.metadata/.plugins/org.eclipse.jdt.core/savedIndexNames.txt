@@ -1,0 +1,1 @@
+INDEX VERSION 1.134+C:\Users\Mario\git\MP0486_RA1_Files_Shop\src\main\.metadata\.plugins\org.eclipse.jdt.core
