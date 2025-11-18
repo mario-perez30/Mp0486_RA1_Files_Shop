@@ -318,6 +318,39 @@ public class Shop {
 		int stock = scanner.nextInt();
 
 		addProduct(new Product(name, new Amount(wholesalerPrice), true, stock));
+		System.out.println("Producto añadido.");
+	} 
+	
+	public void addProduct(Product product) {
+		dao.connect();
+		boolean success = dao.addProduct(product);
+		dao.disconnect();
+		if (success) {
+	        this.inventory.add(product);
+	    }	
+	}
+	
+	public boolean updateProduct(Product product) {
+	    dao.connect();
+	    
+	    boolean success = dao.updateProduct(product);
+	    
+	    dao.disconnect();
+	    
+	    return success;
+	}
+	public boolean deleteProduct(Product product) {
+	    dao.connect();
+	    
+	    boolean success = dao.deleteProduct(product.getId());
+	    
+	    dao.disconnect();
+	    
+	    if (success) {
+	        return inventory.remove(product);
+	    }
+	    
+	    return false;
 	}
 
 	/**
@@ -333,7 +366,7 @@ public class Shop {
 		String name = scanner.next();
 		Product product = findProduct(name);
 
-		if (product != null) {
+		if (deleteProduct(product)) {
 			// remove it
 			if (inventory.remove(product)) {
 				System.out.println("El producto " + name + " ha sido eliminado");
@@ -361,7 +394,15 @@ public class Shop {
 			int stock = scanner.nextInt();
 			// update stock product
 			product.setStock(product.getStock() + stock);
-			System.out.println("El stock del producto " + name + " ha sido actualizado a " + product.getStock());
+			boolean updated = updateProduct(product);
+			if (updated) {
+				System.out.println("El stock del producto " + name + " ha sido actualizado a " + product.getStock() + " (DB y local).");
+			} else {
+				System.out.println("Error: No se pudo actualizar el stock en la base de datos.");
+				// Opcional: Revertir el cambio local si falla la DB
+				product.setStock(product.getStock() - stock);
+			}
+			
 
 		} else {
 			System.out.println("No se ha encontrado el producto con nombre " + name);
@@ -483,7 +524,10 @@ public class Shop {
 	}
 	
 	public boolean writeInventory() {
-	    return this.dao.writeInventory(this.inventory);
+		dao.connect();
+		boolean success = dao.writeInventory(this.inventory);
+		dao.disconnect();
+		return success;
 	}
 
 	/**
@@ -557,14 +601,14 @@ public class Shop {
 	 * 
 	 * @param product
 	 */
-	public void addProduct(Product product) {
+	/*public void addProduct(Product product) {
 		if (isInventoryFull()) {
 			System.out.println("No se pueden añadir más productos, se ha alcanzado el máximo de " + inventory.size());
 			return;
 		}
 		inventory.add(product);
 		numberProducts++;
-	}
+	} */ // anterior en files
 	
 	
 

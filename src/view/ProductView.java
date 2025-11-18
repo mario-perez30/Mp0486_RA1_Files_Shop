@@ -181,11 +181,18 @@ public class ProductView extends JDialog implements ActionListener{
 							JOptionPane.ERROR_MESSAGE);
 					
 				} else {					
-					product.setStock(product.getStock() + Integer.parseInt(textFieldStock.getText()));
-					JOptionPane.showMessageDialog(null, "Stock actualizado ", "Information",
+                    int stock = Integer.parseInt(textFieldStock.getText());
+                    product.setStock(product.getStock() + stock);
+                    
+                    boolean updated = shop.updateProduct(product); 
+                    
+                    if (updated) {
+                         JOptionPane.showMessageDialog(null, "Stock actualizado correctamente en la base de datos", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
-					// release current screen
-					dispose();	
+                    } else {
+                         JOptionPane.showMessageDialog(null, "Error al actualizar stock en la base de datos", "Error",
+							JOptionPane.ERROR_MESSAGE);
+                    }	
 				}
 				
 				break;
@@ -199,10 +206,15 @@ public class ProductView extends JDialog implements ActionListener{
 							JOptionPane.ERROR_MESSAGE);
 					
 				} else {					
-					shop.getInventory().remove(product);
-					JOptionPane.showMessageDialog(null, "Producto eliminado", "Information",
+                    boolean deleted = shop.deleteProduct(product);
+                    
+                    if (deleted) {
+                        JOptionPane.showMessageDialog(null, "Producto eliminado de DB e inventario", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
-					// release current screen
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error al eliminar producto de la base de datos", "Error",
+							JOptionPane.ERROR_MESSAGE);
+                    }
 					dispose();	
 				}
 				

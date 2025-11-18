@@ -116,4 +116,22 @@ public class DaoImplFile implements Dao {
             return false;
         }
     }
+
+	@Override
+	public boolean addProduct(Product p) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean updateProduct(Product p) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteProduct(int id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
