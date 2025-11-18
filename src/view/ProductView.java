@@ -52,6 +52,7 @@ public class ProductView extends JDialog implements ActionListener{
 		this.shop = shop;
 		this.option = option;
 		
+		
 		// main configuration dialog
 		switch (option) {
 		case Constants.OPTION_ADD_PRODUCT:
