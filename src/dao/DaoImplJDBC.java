@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
+import model.Amount;
 import model.Employee;
 import model.Product;
 
@@ -64,13 +64,60 @@ public class DaoImplJDBC implements Dao {
     	return employee;
 	}	
 	
-	 @Override
-	    public ArrayList<Product> getInventory() {
-	        return new ArrayList<Product>();
-	    }
-	 @Override
-	    public boolean writeInventory(ArrayList<Product> inventory) {
-	        return false;
-	    }
+	@Override
+    public ArrayList<Product> getInventory() {
+        ArrayList<Product> inventory = new ArrayList<>();
+        String query = "SELECT id, name, wholesalerPrice, available, stock FROM inventory";
+
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+
+            while (rs.next()) {
+               
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                double wholesalerPrice = rs.getDouble("wholesalerPrice");
+                int stock = rs.getInt("stock");
+                boolean available = rs.getBoolean("available");
+
+                
+                Amount amount = new Amount(wholesalerPrice);
+                
+                
+                Product p = new Product(name, amount, available, stock);
+                p.setId(id); 
+                
+                inventory.add(p);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null; 
+        }
+        
+        return inventory;
+    }
+	
+
+    @Override
+    public boolean writeInventory(ArrayList<Product> inventory) {
+        return false; 
+    }
+    
+ 
+    @Override
+    public boolean addProduct(Product p) {
+        return false;
+    }
+    
+    @Override
+    public boolean updateProduct(Product p) {
+        return false;
+    }
+    
+    @Override
+    public boolean deleteProduct(int id) {
+        return false;
+    }
 
 }

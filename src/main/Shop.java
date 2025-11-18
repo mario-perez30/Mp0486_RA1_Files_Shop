@@ -19,6 +19,7 @@ import java.util.Scanner;
 
 import dao.Dao;
 import dao.DaoImplFile;
+import dao.DaoImplJDBC;
 
 public class Shop {
 	private Amount cash = new Amount(100.00);
@@ -36,7 +37,8 @@ public class Shop {
 		inventory = new ArrayList<Product>();
 		sales = new ArrayList<Sale>();
 		
-		this.dao = new DaoImplFile();
+		//this.dao = new DaoImplFile();  -Antiguo ahora lo cambiamos para JDBC
+		this.dao = new DaoImplJDBC();
 	}
 	
 	
@@ -229,9 +231,11 @@ public class Shop {
 	 */
 	private void readInventory() {
 		 try {
-		        // Intentamos primero cargar usando el DAO que es el nuevo metodo que hemos creado, pero por si acaso no devolviera nada se usaría el código antiguo
-		        this.inventory = this.dao.getInventory();
-		        // De aquí en adelante se podría borrar
+		        // Intentamos primero cargar usando el DAO que es el nuevo metodo que hemos creado, pero por si acaso no devolviera nada se usaría el código antiguo 
+			 this.dao.connect();
+			 this.inventory = this.dao.getInventory();
+			 this.dao.disconnect();
+			// De aquí en adelante se podría borrar
 		        if (this.inventory == null || this.inventory.isEmpty()) {
 		            // 
 		            System.out.println("Inventario vacío: leyendo fichero directamente...");
