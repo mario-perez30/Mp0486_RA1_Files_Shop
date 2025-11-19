@@ -210,7 +210,7 @@ public class ProductView extends JDialog implements ActionListener{
                     boolean deleted = shop.deleteProduct(product);
                     
                     if (deleted) {
-                        JOptionPane.showMessageDialog(null, "Producto eliminado de DB e inventario", "Information",
+                        JOptionPane.showMessageDialog(null, "Producto eliminado de la base de datos e inventario", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(null, "Error al eliminar producto de la base de datos", "Error",
