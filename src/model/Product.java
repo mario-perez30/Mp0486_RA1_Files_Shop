@@ -1,26 +1,50 @@
 package model;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.PostLoad;
 
+@Entity
+@Table(name = "inventory")
 public class Product {
-	private int id;
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "name")
     private String name;
-    private Amount publicPrice;
-    private Amount wholesalerPrice;
-    private boolean available;
+
+    @Column(name = "price") 
+    private double price;
+
+    @Column(name = "stock")
     private int stock;
+
+    @Column(name = "available")
+    private boolean available;
+
+    @Transient 
+    private Amount publicPrice;
+    @Transient
+    private Amount wholesalerPrice;
+    @Transient
     private static int totalProducts;
     
-    public final static double EXPIRATION_RATE=0.60;
+    public Product() {}
     
 	public Product(String name, Amount wholesalerPrice, boolean available, int stock) {
-		super();
-		this.id = totalProducts+1;
 		this.name = name;
-		this.wholesalerPrice = wholesalerPrice;
-		this.publicPrice = new Amount(wholesalerPrice.getValue() * 2);
-		this.available = available;
-		this.stock = stock;
-		totalProducts++;
-	}
+        this.wholesalerPrice = wholesalerPrice;
+        this.price = wholesalerPrice.getValue(); // Sincronización
+        this.publicPrice = new Amount(wholesalerPrice.getValue() * 2);
+        this.available = available;
+        this.stock = stock;
+    }
 
 	public int getId() {
 		return id;
@@ -80,8 +104,10 @@ public class Product {
 		Product.totalProducts = totalProducts;
 	}
 	
-	public void expire() {
-		this.publicPrice.setValue(this.getPublicPrice().getValue()*EXPIRATION_RATE); ;
+	@javax.persistence.PostLoad
+	protected void postLoad() {
+	    this.wholesalerPrice = new Amount(this.price);
+	    this.publicPrice = new Amount(this.price * 2);
 	}
 
 	@Override
