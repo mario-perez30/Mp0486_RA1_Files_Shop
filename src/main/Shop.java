@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import model.Amount; 
 import model.Product;
 import dao.Dao;
-import dao.DaoImplHibernate;
+import dao.DaoImplMongoDB;
 
 public class Shop {
 	private ArrayList<Product> inventory;
@@ -15,7 +15,7 @@ public class Shop {
 		this.cash = new Amount(100.0); 
 		this.inventory = new ArrayList<Product>();
 		
-		this.dao = new DaoImplHibernate();
+		this.dao = new DaoImplMongoDB();
 		this.dao.connect();
 	}
 
