@@ -39,21 +39,30 @@ public class DaoImplMongoDB implements Dao {
     }
 
     @Override
-    public ArrayList<Product> getInventory() { 
+    public ArrayList<Product> getInventory() {
         ArrayList<Product> inventory = new ArrayList<>();
         List<Document> results = inventoryCol.find().into(new ArrayList<>());
 
         for (Document doc : results) {
             String name = doc.getString("name");
-            int id = doc.getInteger("id");
+            
+            int id = doc.getInteger("id"); 
+            
             int stock = doc.getInteger("stock");
             boolean available = doc.getBoolean("available");
             
             Document priceDoc = (Document) doc.get("wholesalerPrice");
-            double priceValue = priceDoc.getDouble("value");
+            double priceValue = 0.0;
+            if (priceDoc.get("value") instanceof Integer) {
+                priceValue = ((Integer) priceDoc.get("value")).doubleValue();
+            } else {
+                priceValue = priceDoc.getDouble("value");
+            }
             
             Product p = new Product(name, new Amount(priceValue), available, stock);
+            
             p.setId(id);
+            
             inventory.add(p);
         }
         return inventory;
@@ -62,6 +71,7 @@ public class DaoImplMongoDB implements Dao {
     @Override
     public boolean writeInventory(ArrayList<Product> inventory) { 
         try {
+        	
             for (Product p : inventory) {
                 Document doc = new Document("id", p.getId())
                         .append("name", p.getName())
@@ -81,8 +91,13 @@ public class DaoImplMongoDB implements Dao {
     }
 
     @Override
-    public boolean addProduct(Product p) { 
+    public boolean addProduct(Product p) {
         try {
+            if (p.getId() == 0) {
+                long count = inventoryCol.countDocuments();
+                p.setId((int) count + 1);
+            }
+
             Document doc = new Document("id", p.getId())
                     .append("name", p.getName())
                     .append("wholesalerPrice", new Document("value", p.getWholesalerPrice().getValue())
@@ -90,7 +105,7 @@ public class DaoImplMongoDB implements Dao {
                     .append("available", p.isAvailable())
                     .append("stock", p.getStock());
             
-            inventoryCol.insertOne(doc); 
+            inventoryCol.insertOne(doc);
             return true;
         } catch (Exception e) {
             return false;

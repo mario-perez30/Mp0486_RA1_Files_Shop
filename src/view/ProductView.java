@@ -78,7 +78,7 @@ public class ProductView extends JDialog implements ActionListener{
 		JLabel lblName = new JLabel("Nombre producto:");
 		lblName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblName.setBounds(33, 10, 119, 19);
-		contentPanel.add(lblName);
+		contentPanel.add(lblName); 
 		textFieldName = new JTextField();
 		textFieldName.setHorizontalAlignment(SwingConstants.RIGHT);
 		textFieldName.setFont(new Font("Tahoma", Font.PLAIN, 15));
